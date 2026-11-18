@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>ドパガキ問題集｜資格の過去問を、登録なしで1問から</title>
+<meta name="description" content="ITパスポート・基本情報などの過去問2,183問を、登録なしで無料で解ける問題集アプリ。教材の写真から自分の問題集も作れます。ブラウザ・iPhone アプリ・Mac 版。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap">
+<style>
+/* 参考にした考え方（絵や文は借りていない）:
+   landonorris.com … 大きな字が流れる帯・手書きの線がスクロールで描かれる
+   messenger.abeto.co … 小さな島の世界が浮かび、手の動きで傾く
+   sweet-tape.com … クラフト紙・テープで貼った紙・落ちてきて止まる動き
+   preymaker.com … 暗い面に大きな数字
+   色はアプリの色の約束（紫 #6424ed・金 #F2B705・藍 #1F2A5C）＋表紙の空の水色 */
+:root{
+  --ink:#1F2A5C; --ink-soft:#4A5378; --cream:#FBF6EA; --paper:#FFFDF7; --kraft:#D7B98A;
+  --sky-a:#74DDD8; --sky-b:#8EE8E0; --purple:#6424ed; --gold:#F2B705; --miss:#b23336; --ok:#1e7a4c;
+  --on-ink:#F4EFE2; --on-ink-soft:#C9CEE6; --tape:rgba(246,237,207,.9);
+  --head:"Dela Gothic One","Hiragino Sans",sans-serif;
+  --body:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic UI",system-ui,sans-serif;
+  --ease:cubic-bezier(.2,.75,.2,1); --spring:cubic-bezier(.34,1.56,.64,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{word-break:auto-phrase;margin:0;background:var(--cream);color:var(--ink);font-family:var(--body);font-size:19px;line-height:1.8;-webkit-font-smoothing:antialiased;overflow-x:clip}
+img{max-width:100%;display:block}
+h1,h2,h3{font-family:var(--head);font-weight:400;line-height:1.15;margin:0;word-break:auto-phrase}
+.nw{white-space:nowrap}
+a{color:var(--purple)}
+section{scroll-margin-top:64px;overflow-x:clip}
+:focus-visible{outline:3px solid var(--purple);outline-offset:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* 上の帯（進み具合の線つき） */
+.top{position:fixed;inset:0 0 auto 0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px max(18px,env(safe-area-inset-left));color:var(--ink);transition:background .3s,color .3s}
+.top.solid{background:rgba(31,42,92,.92);color:var(--on-ink);backdrop-filter:blur(10px)}
+.top b{font-family:var(--head);font-weight:400;font-size:15px;white-space:nowrap}
+.top nav{display:flex;gap:6px}
+.top nav a{flex:none;color:inherit;text-decoration:none;font-size:13px;font-weight:700;padding:6px 12px;border-radius:999px;border:1.5px solid currentColor;opacity:.85}
+.top nav a:hover,.top nav a:focus-visible{background:var(--gold);color:var(--ink);border-color:var(--gold);opacity:1}
+.progress{position:fixed;left:0;top:0;height:4px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:var(--gold);z-index:60}
+.top:not(.solid){background:rgba(116,221,216,.92);backdrop-filter:blur(10px)}
+@media (max-width:760px){.top b{flex:none}.top nav{min-width:0;overflow-x:auto;scrollbar-width:none;padding:2px 0}.top nav::-webkit-scrollbar{display:none}.top nav a{font-size:12px;padding:5px 10px}}
+
+/* 1. 表紙: 浮かぶ島 */
+.hero{position:relative;min-height:100svh;background:linear-gradient(180deg,var(--sky-a),var(--sky-b));overflow:hidden;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);align-items:center;padding:96px max(24px,5vw) 72px;perspective:1200px}
+.cloud{position:absolute;background:#fff;border-radius:999px;filter:blur(2px);opacity:.75;animation:drift linear infinite}
+.cloud::before,.cloud::after{content:"";position:absolute;background:#fff;border-radius:50%}
+.cloud::before{width:55%;height:160%;left:15%;bottom:20%}.cloud::after{width:40%;height:120%;right:12%;bottom:25%}
+.c1{width:220px;height:52px;top:16%;left:-240px;animation-duration:70s}
+.c2{width:160px;height:40px;top:62%;left:-200px;animation-duration:95s;animation-delay:-40s}
+.c3{width:280px;height:64px;top:80%;left:-300px;animation-duration:120s;animation-delay:-70s;opacity:.55}
+@keyframes drift{to{transform:translateX(calc(100vw + 600px))}}
+.hero .copy{position:relative;z-index:3}
+.kicker{display:inline-block;font-weight:700;font-size:13px;letter-spacing:.14em;background:var(--ink);color:var(--on-ink);padding:6px 14px;border-radius:999px}
+.title{font-size:clamp(52px,8.4vw,128px);margin:22px 0 20px;letter-spacing:-.01em}
+.title .ch{display:inline-block;opacity:0;transform:translateY(-90px) rotate(-12deg);animation:drop .9s var(--spring) forwards;animation-delay:calc(var(--k) * 70ms + .2s)}
+@keyframes drop{to{opacity:1;transform:none}}
+.hero p.lede{font-size:clamp(19px,1.6vw,22px);font-weight:700;margin:0;max-width:26em}
+.ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;padding:14px 24px;border-radius:14px;border:0;cursor:pointer;font:inherit;font-weight:700;transition:transform .2s var(--spring),box-shadow .2s}
+.btn.gold{background:var(--gold);color:var(--ink);box-shadow:0 6px 0 rgba(31,42,92,.28)}
+.btn.line{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
+.btn:hover{transform:translateY(-3px)}.btn:active{transform:translateY(2px)}
+.island{position:relative;z-index:2;transform-style:preserve-3d;transition:transform .5s var(--ease)}
+.island img{width:100%;height:auto;-webkit-mask-image:radial-gradient(ellipse 72% 70% at 55% 50%,#000 62%,transparent 100%);mask-image:radial-gradient(ellipse 72% 70% at 55% 50%,#000 62%,transparent 100%);animation:bob 6s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-14px)}}
+.scrollhint{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);font-size:12px;font-weight:700;letter-spacing:.2em;color:var(--ink);opacity:.7;z-index:3}
+.scrollhint::after{content:"";display:block;width:2px;height:28px;margin:6px auto 0;background:var(--ink);animation:hint 1.6s var(--ease) infinite;transform-origin:top}
+@keyframes hint{0%{transform:scaleY(0)}60%{transform:scaleY(1)}100%{transform:scaleY(1);opacity:0}}
+@media (max-width:860px){.hero{grid-template-columns:1fr;padding-top:72px}.island{order:-1;margin:-10px -12% -6%}}
+
+/* 2. 試験の名前が流れる帯 */
+.marq{background:var(--ink);overflow:hidden;padding:18px 0;border-block:5px solid var(--gold)}
+.marq .row{display:flex;gap:42px;white-space:nowrap;font-family:var(--head);font-size:clamp(34px,5.4vw,78px);line-height:1.1;will-change:transform}
+.marq .row span:nth-child(odd){color:var(--gold)}.marq .row span:nth-child(even){color:transparent;-webkit-text-stroke:1.5px var(--on-ink)}
+.marq .row.r2 span:nth-child(odd){color:var(--on-ink)}.marq .row.r2 span:nth-child(even){-webkit-text-stroke-color:var(--gold)}
+
+/* 3. その場で1問 */
+.try{position:relative;padding:clamp(64px,9vw,128px) max(18px,5vw);background:var(--kraft) url(img/desk-paper.webp) center/cover}
+.try .inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:clamp(24px,4vw,56px);align-items:start}
+.try h2{font-size:clamp(36px,5vw,68px)}
+.try .side p{font-weight:700;margin:16px 0 0}
+.sheet{position:relative;background:var(--paper);border-radius:6px;padding:clamp(22px,3vw,40px);box-shadow:0 28px 60px rgba(60,40,10,.3)}
+.sheet::before,.sheet::after{content:"";position:absolute;top:-16px;width:130px;height:34px;background:var(--tape)}
+.sheet::before{left:12%;transform:rotate(-4deg)}.sheet::after{right:12%;transform:rotate(5deg)}
+.sheet .meta{font-size:14px;font-weight:700;color:var(--ink-soft);display:flex;gap:8px;flex-wrap:wrap;padding-right:80px}
+.sheet .meta span{background:#f3edff;color:var(--purple);padding:2px 10px;border-radius:999px}
+.stem{font-weight:700;margin:12px 0}
+.items{margin:0 0 18px;padding:14px 16px;background:#faf6ec;border-radius:10px;font-size:17px}
+.items p{margin:4px 0}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{display:flex;gap:10px;align-items:center;text-align:left;font:inherit;font-weight:700;background:#fff;border:2px solid #e4dccb;border-radius:12px;padding:12px 14px;cursor:pointer;color:var(--ink);transition:transform .15s,border-color .15s}
+.opt b{font-family:var(--head);font-weight:400;display:grid;place-items:center;width:30px;height:30px;border-radius:8px;background:var(--cream);flex:none}
+.opt:hover{border-color:var(--purple);transform:translateY(-2px)}
+.opt.right{border-color:var(--ok);background:#e7f6ec}.opt.wrong{border-color:var(--miss);background:#fbeaea}
+.opts.done .opt{cursor:default}.opts.done .opt:hover{transform:none}
+@media (max-width:560px){.opts{grid-template-columns:1fr}}
+.stamp{position:absolute;right:-26px;top:-44px;z-index:3;width:120px;height:120px;border-radius:50%;border:6px solid var(--miss);color:var(--miss);display:grid;place-items:center;font-family:var(--head);font-size:28px;transform:scale(2.2) rotate(-20deg);opacity:0;pointer-events:none;background:rgba(255,253,247,.6)}
+.stamp.on{animation:stamp .5s var(--spring) forwards}
+.stamp.ok{border-color:var(--ok);color:var(--ok)}
+@keyframes stamp{to{transform:scale(1) rotate(-14deg);opacity:.92}}
+.exp{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s var(--ease)}
+.exp.open{grid-template-rows:1fr}
+.exp>div{overflow:hidden}
+.exp .box{margin-top:18px;border-top:2px dashed #e4dccb;padding-top:16px;font-size:17px}
+.exp .box p{margin:6px 0}
+.src{font-size:14px;color:var(--ink-soft);margin-top:14px}
+.after{margin-top:16px;font-family:var(--head);font-size:clamp(22px,2.4vw,30px);color:var(--purple)}
+@media (max-width:860px){.try .inner{grid-template-columns:1fr}.stamp{width:88px;height:88px;font-size:20px;right:-6px;top:-40px}.sheet .meta{padding-right:70px}}
+
+/* 4. 大きな数字 */
+.nums{background:var(--ink);color:var(--on-ink);padding:clamp(64px,9vw,120px) max(18px,5vw)}
+.nums .inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:48px}
+.num{min-width:0}
+.num b{display:block;font-family:var(--head);font-weight:400;font-size:clamp(48px,5.6vw,92px);white-space:nowrap;line-height:1;color:var(--gold);font-variant-numeric:tabular-nums}
+.num span{display:block;margin-top:12px;font-weight:700;font-size:clamp(17px,1.5vw,21px)}
+.num small{display:block;color:var(--on-ink-soft);font-size:16px}
+@media (max-width:760px){.nums .inner{grid-template-columns:1fr;gap:40px}}
+
+/* 5. 4歩（スマホの画面がスクロールで切り替わる） */
+.steps{position:relative;background:var(--cream);padding:clamp(64px,9vw,120px) max(18px,5vw)}
+.steps .inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:minmax(0,6fr) minmax(0,5fr);gap:clamp(24px,5vw,80px)}
+.steps h2{font-size:clamp(36px,5vw,68px);margin-bottom:12px}
+.track{position:relative;padding-left:56px}
+.pencil{position:absolute;left:0;top:0;width:44px;height:100%;overflow:visible}
+.pencil path{fill:none;stroke:var(--gold);stroke-width:6;stroke-linecap:round}
+.step{min-height:78vh;display:flex;flex-direction:column;justify-content:center;opacity:.28;transition:opacity .5s}
+.step.on{opacity:1}
+.step .no{font-family:var(--head);font-size:clamp(64px,8vw,120px);line-height:1;color:transparent;-webkit-text-stroke:2px var(--purple)}
+.step.on .no{color:var(--purple)}
+.step h3{font-size:clamp(30px,3.6vw,48px);margin:6px 0 12px}
+.step ol{margin:0;padding-left:1.3em}
+.step li{margin:6px 0}
+.step .hint{margin-top:14px;font-size:17px;color:var(--ink-soft);border-left:4px solid var(--gold);padding-left:12px}
+.stage{position:sticky;top:12vh;height:76vh;display:grid;place-items:center}
+.phone{position:relative;width:min(330px,80%);aspect-ratio:390/844;border-radius:44px;background:#11162d;padding:12px;box-shadow:0 40px 80px rgba(31,42,92,.35),inset 0 0 0 2px #2b3460;transform:rotate(3deg);transition:transform .6s var(--ease)}
+.phone .screen{position:relative;width:100%;height:100%;border-radius:34px;overflow:hidden;background:var(--paper)}
+.phone .screen img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:0;transform:translateY(24px) scale(.98);transition:opacity .5s var(--ease),transform .6s var(--ease)}
+.phone .screen img.contain{object-fit:contain;object-position:top}
+.phone .screen img.on{opacity:1;transform:none}
+.phone .notch{position:absolute;top:18px;left:50%;width:90px;height:22px;margin-left:-45px;border-radius:999px;background:#11162d;z-index:2}
+.bignum{position:absolute;right:-6%;bottom:6%;font-family:var(--head);font-size:clamp(120px,16vw,240px);color:var(--gold);opacity:.22;line-height:1;pointer-events:none}
+.step .mobile-shot{display:none;width:min(320px,82%);height:auto;margin-top:16px;border-radius:24px;box-shadow:0 20px 40px rgba(31,42,92,.25);border:8px solid #11162d}
+@media (max-width:860px){.steps .inner{grid-template-columns:1fr}.stage{display:none}.step{min-height:auto;opacity:1;padding:24px 0}.step .mobile-shot{display:block}.track{padding-left:40px}}
+
+/* 6. 料金 */
+.price{background:var(--cream);padding:0 max(18px,5vw) clamp(64px,9vw,120px)}
+.price .inner{max-width:1200px;margin:0 auto}
+.price h2{font-size:clamp(34px,4.6vw,60px)}
+.plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:28px}
+.plan{background:var(--paper);border-radius:22px;padding:26px 24px 28px;box-shadow:0 6px 0 rgba(31,42,92,.1);border:3px solid transparent}
+.plan.hl{border-color:var(--purple)}
+.plan .name{font-weight:700;margin:0}
+.plan .yen{font-family:var(--head);font-size:clamp(30px,3.4vw,48px);line-height:1.1;margin:6px 0 12px;white-space:nowrap}
+.plan .yen small{font-family:var(--body);font-size:14px;font-weight:700}
+.plan p{margin:0;color:var(--ink-soft);font-size:17px}
+@media (max-width:900px){.plans{grid-template-columns:1fr}}
+
+/* 4. はじめての方へ（切符） */
+.company{background:var(--gold);padding:clamp(64px,9vw,120px) max(18px,5vw);overflow:hidden}
+.ticket .stub small{font-weight:700;color:var(--ink-soft);font-size:15px}
+.company .inner{max-width:1200px;margin:0 auto}
+.company .eyebrow{font-weight:700;letter-spacing:.14em;font-size:13px}
+.company h2{font-size:clamp(36px,5.4vw,76px)}
+.ticket{position:relative;margin-top:36px;display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);background:var(--cream);border-radius:22px;box-shadow:0 14px 0 rgba(31,42,92,.2)}
+.ticket .stub{border-left:3px dashed #d9cdb2;padding:clamp(22px,3vw,40px);display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
+.ticket .stub b{font-family:var(--head);font-weight:400;font-size:clamp(64px,8vw,120px);line-height:1;color:var(--purple)}
+.ticket .stub span{font-weight:700}
+.ticket ol{list-style:none;margin:0;padding:clamp(22px,3vw,40px);counter-reset:t;display:grid;gap:18px}
+.ticket li{counter-increment:t;display:grid;grid-template-columns:52px 1fr;gap:12px;align-items:start}
+.ticket li::before{content:counter(t);font-family:var(--head);font-size:40px;line-height:1;color:var(--purple)}
+.ticket li strong{display:block;font-size:21px}
+.ticket li span{color:var(--ink-soft);font-size:17px}
+.ticket::before,.ticket::after{content:"";position:absolute;left:60%;width:34px;height:34px;margin-left:-17px;border-radius:50%;background:var(--gold)}
+.ticket::before{top:-17px}.ticket::after{bottom:-17px}
+.company .note{margin-top:28px;font-weight:700;font-size:17px}
+.company .go{margin-top:28px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.btn.ink{background:var(--ink);color:var(--on-ink);box-shadow:0 6px 0 rgba(31,42,92,.28)}
+
+/* 5. こんな人に */
+.who{background:var(--cream);padding:clamp(64px,9vw,120px) max(18px,5vw) 0}
+.who .inner{max-width:1200px;margin:0 auto}
+.who h2{font-size:clamp(34px,4.6vw,60px)}
+.whos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:28px}
+.whos article{background:var(--paper);border-radius:22px;padding:26px 24px 28px;box-shadow:0 6px 0 rgba(31,42,92,.1)}
+.whos .tag{font-weight:700;font-size:15px;color:var(--purple);margin:0}
+.whos h3{font-size:clamp(24px,2.4vw,30px);margin:6px 0 10px}
+@media (max-width:900px) and (min-width:761px){.whos{grid-template-columns:1fr}}
+.whos p{margin:0;color:var(--ink-soft);font-size:17px}
+.whos .ex{margin-top:12px;background:var(--cream);border-radius:10px;padding:8px 12px;color:var(--ink);font-size:15px;font-weight:700}
+@media (max-width:760px){.whos{grid-template-columns:1fr}}
+
+/* 8. アプリでも（3枚） */
+.apps{background:var(--ink);color:var(--on-ink);padding:clamp(64px,9vw,120px) max(18px,5vw)}
+.apps .inner{max-width:1200px;margin:0 auto}
+.apps h2{font-size:clamp(34px,4.6vw,60px)}
+.apps .lead{font-weight:700;margin:8px 0 0;color:var(--on-ink-soft)}
+.appcards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:28px}
+.appcards article{background:var(--cream);color:var(--ink);border-radius:22px;padding:26px 24px 28px;display:flex;flex-direction:column;gap:10px}
+.appcards .tag{font-weight:700;font-size:15px;color:var(--purple);margin:0}
+.appcards h3{font-size:clamp(26px,2.6vw,34px)}
+.appcards p{margin:0;color:var(--ink-soft);font-size:17px}
+.appcards .act{margin-top:auto;padding-top:8px}
+.appcards .act a.txt{font-family:var(--head);text-decoration:none;border-bottom:3px solid var(--gold);color:var(--ink)}
+.badge-as img{height:48px;width:auto}
+.apps .credit{margin-top:18px;font-size:13px;color:var(--on-ink-soft)}
+@media (max-width:900px){.appcards{grid-template-columns:1fr}}
+.appcards .act a.txt{font-size:clamp(17px,1.7vw,20px);overflow-wrap:anywhere}
+@media (max-width:760px){.ticket{grid-template-columns:1fr}.ticket .stub{border-left:0;border-top:3px dashed #d9cdb2}.ticket::before,.ticket::after{display:none}}
+
+/* 8. ほかにできること（横に流れるポラロイド） */
+.more{background:var(--kraft) url(img/desk-paper.webp) center/cover;padding:clamp(64px,9vw,120px) 0}
+.more .head{max-width:1200px;margin:0 auto;padding:0 max(18px,5vw)}
+.more h2{font-size:clamp(36px,5vw,68px)}
+.more .head p{font-weight:700;margin:8px 0 0}
+.strip{display:flex;gap:28px;overflow-x:auto;scroll-snap-type:x mandatory;padding:44px max(18px,5vw) 34px;scrollbar-width:thin;cursor:grab}
+.strip:active{cursor:grabbing}
+.pol{flex:none;width:min(300px,76vw);scroll-snap-align:center;background:var(--paper);padding:12px 12px 18px;box-shadow:0 22px 44px rgba(60,40,10,.3);transition:transform .3s var(--spring)}
+.pol:hover{transform:rotate(0) translateY(-8px)!important}
+.pol .ph{aspect-ratio:4/3;overflow:hidden;background:#efe6d2}
+.pol .ph img{width:100%;height:100%;object-fit:cover;object-position:top;-webkit-user-drag:none;user-select:none;pointer-events:none}
+.strip.dragging{user-select:none}
+.pol .ph.plane{background:var(--purple);display:grid;place-items:center}
+.pol h3{font-size:22px;margin:14px 4px 4px}
+.pol p{margin:0 4px;font-size:17px;color:var(--ink-soft)}
+
+/* 9. よくある質問 */
+.faq{padding:clamp(64px,9vw,120px) max(18px,5vw);background:var(--ink);color:var(--on-ink)}
+.faq .inner{max-width:880px;margin:0 auto}
+.faq h2{font-size:clamp(34px,5vw,60px);margin-bottom:20px}
+.faq details{border-top:1px solid rgba(244,239,226,.25);padding:16px 0}
+.faq details:last-of-type{border-bottom:1px solid rgba(244,239,226,.25)}
+.faq summary{cursor:pointer;font-weight:700;font-size:20px;list-style:none;display:flex;justify-content:space-between;gap:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-family:var(--head);color:var(--gold);transition:transform .3s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq p{margin:10px 0 0;color:var(--on-ink-soft)}
+
+/* 10. 最後 */
+.end{position:relative;background:linear-gradient(180deg,var(--sky-a),var(--sky-b));padding:clamp(64px,9vw,110px) max(18px,5vw) 0;overflow:hidden}
+.end .inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,440px);gap:24px;align-items:end}
+.end h2{font-size:clamp(44px,7vw,108px)}
+.urlrow{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:18px 0 10px}
+.urlrow a{font-family:var(--head);font-size:clamp(26px,3.6vw,48px);color:var(--ink);text-decoration:none;border-bottom:4px solid var(--gold)}
+.end p{margin:0 0 64px;font-weight:700}
+.wave{transform:translateY(60%);transition:transform 1s var(--spring)}
+.wave.in{transform:none}
+.wave img{width:100%;height:auto;border-radius:50% 50% 0 0;background:var(--cream)}
+@media (max-width:900px){.end .inner{grid-template-columns:1fr}.wave{max-width:300px;justify-self:center}}
+.foot a{white-space:nowrap}
+.foot{margin:0;background:var(--ink);color:var(--on-ink-soft);font-size:13px;text-align:center;padding:20px}
+#copied{font-weight:700;font-size:14px}
+
+/* 出てくる動き */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+.slap{opacity:0;transform:translateY(-40px) rotate(8deg) scale(1.08)}
+.slap.in{opacity:1;transform:rotate(var(--r,-1deg));transition:transform .7s var(--spring),opacity .3s}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .title .ch,.reveal,.slap{opacity:1;transform:none}
+  .wave{transform:none}
+  .stamp.on{opacity:.92;transform:rotate(-14deg)}
+  .marq .row{flex-wrap:wrap;white-space:normal;justify-content:center;row-gap:6px;padding:0 16px}
+  .marq .row.r2{display:none}
+}
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"></div>
+<header class="top" id="top">
+  <b>ドパガキ問題集</b>
+  <nav aria-label="章">
+    <a href="#try">1問解く</a><a href="#start">はじめ方</a><a href="#steps">使い方</a><a href="#price">料金</a><a href="#apps">アプリ</a><a href="#faq">質問</a>
+  </nav>
+</header>
+
+<main>
+<section class="hero" aria-labelledby="h-title">
+  <span class="cloud c1"></span><span class="cloud c2"></span><span class="cloud c3"></span>
+  <div class="copy">
+    <span class="kicker">資格・学校・独学の勉強に</span>
+    <h1 class="title" id="h-title" data-split>まずは、1問だけ。</h1>
+    <p class="lede">ITパスポートや基本情報の過去問が、最初から<span class="nw">2,183問</span>。ブラウザで開けば、登録なしですぐ解けます。覚えたいことを自分の問題集にもできます。</p>
+    <div class="ctas"><a class="btn gold" href="#try">ここで1問解いてみる</a><a class="btn line" href="https://dopagakiquiz.com/">アプリを開く（登録なし）</a></div>
+  </div>
+  <div class="island" id="island"><img src="img/cover-island.webp" width="1920" height="1081" alt="積み上げた教科書の小さな島の上で、ドパガキくんが鉛筆を持って笑っている" fetchpriority="high"></div>
+  <span class="scrollhint" aria-hidden="true">SCROLL</span>
+</section>
+
+<div class="marq" role="img" aria-label="入っている試験の例: ITパスポート、基本情報技術者、情報セキュリティマネジメント、登録販売者、FP3級、AZ-900、AZ-104、AZ-305、CCNP、LPIC、簿記2級、TOEIC L&amp;R 形式">
+  <div class="row r1" aria-hidden="true"></div>
+  <div class="row r2" aria-hidden="true"></div>
+</div>
+
+<section class="try" id="try" aria-labelledby="h-try">
+  <div class="inner">
+    <div class="side reveal">
+      <h2 id="h-try">ここで、<br>1問。</h2>
+      <p>ITパスポートの本物の過去問です。選ぶと、その場で正解と解説が出ます。アプリでも同じ動きです。</p>
+    </div>
+    <div class="sheet slap" style="--r:-1deg">
+      <div class="stamp" id="stamp" aria-hidden="true"></div>
+      <div class="meta"><span>ITパスポート</span><span>令和8年度 問1</span><span>ストラテジ系</span></div>
+      <p class="stem">生成AIを用いた生成物の取扱いに関して，既存の著作物の著作権者から許諾を得ることが必要となる可能性のあるものだけを，全て挙げたものはどれか。</p>
+      <div class="items">
+        <p>a　好みのアーティストの楽曲に似た音楽が得られるように生成AIを用いて楽曲を生成し，その楽曲をインターネット上にアップロードし，無料で公開した。</p>
+        <p>b　好みのアーティストの楽曲に似た音楽が得られるように生成AIを用いて楽曲を生成し，その楽曲を自分のPC上に保管し，個人で視聴した。</p>
+        <p>c　生成AIで音楽を生成したところ，偶然好みのアーティストの楽曲に似た音楽が生成できたので，自分のPC上に保管し，個人で視聴した。</p>
+      </div>
+      <div class="opts" id="opts" role="group" aria-label="選択肢">
+        <button type="button" class="opt" data-i="0"><b>A</b>a</button>
+        <button type="button" class="opt" data-i="1"><b>B</b>a，b</button>
+        <button type="button" class="opt" data-i="2"><b>C</b>a，b，c</button>
+        <button type="button" class="opt" data-i="3"><b>D</b>b，c</button>
+      </div>
+      <p class="sr" id="result" aria-live="polite"></p>
+      <div class="exp" id="exp"><div><div class="box">
+        <p><strong>正解：A（a）</strong></p>
+        <p>a は、既存の楽曲に似せた曲を生成して公開しており、元の著作物の表現に似ていれば著作権侵害になるおそれがあります。公開は私的利用の範囲を超えるため、許諾が必要になる可能性があります。</p>
+        <p>b は自分の PC に保管して個人で視聴するだけで、私的使用のための複製にあたり、原則として許諾は要りません。c は偶然似ただけで元の曲に依拠しておらず、個人で視聴するだけです。</p>
+        <p class="after">アプリなら、過去問がこの2,183問ぶん。</p>
+        <div class="ctas" style="margin-top:12px"><a class="btn gold" href="https://dopagakiquiz.com/it-passport">ITパスポートの過去問を解く</a><a class="btn line" href="#start">はじめ方を見る</a></div>
+      </div></div></div>
+      <p class="src">出典：令和8年度 ITパスポート試験 公開問題 問1（独立行政法人情報処理推進機構）。選択肢の記号はアプリと同じ A〜D に、解説はアプリの物を短くしています。</p>
+    </div>
+  </div>
+</section>
+
+<section class="company" id="start" aria-labelledby="h-start">
+  <div class="inner">
+    <p class="eyebrow">はじめての方へ</p>
+    <h2 id="h-start" class="reveal">登録なしで、<br>開いてすぐ1問目。</h2>
+    <div class="ticket slap" style="--r:-1.2deg">
+      <ol>
+        <li><div><strong>dopagakiquiz.com を開く</strong><span>PC でもスマホでも、ブラウザで開くだけ。登録もインストールも要りません。</span></div></li>
+        <li><div><strong>分野と資格を選ぶ</strong><span>「なにを勉強していますか？」と聞かれるので、IT・クラウド、お金・くらし、語学・数学から選びます。</span></div></li>
+        <li><div><strong>読んで、解く</strong><span>答えつきの5問を読んでから、同じ5問を解きます（約5分）。あとは本棚から好きな年度の1冊へ。</span></div></li>
+      </ol>
+      <div class="stub"><span>登録もお金も</span><b>0円</b><small>同梱の過去問は、ずっと無料です</small></div>
+    </div>
+    <div class="go"><a class="btn ink" href="https://dopagakiquiz.com/">dopagakiquiz.com を開く</a></div>
+  </div>
+</section>
+
+<section class="nums" aria-label="数字で見る">
+  <div class="inner">
+    <div class="num reveal"><b data-count="2183">2,183</b><span>問の過去問が最初から</span><small>ITパスポート・基本情報・情報セキュリティマネジメント・登録販売者・FP3級</small></div>
+    <div class="num reveal"><b data-count="30">30</b><span>の資格から探せる</span><small>AZ-900 などのオリジナル問題もあります（一部は有料）</small></div>
+    <div class="num reveal"><b data-count="0" data-suffix="円">0円</b><span>登録なしで解ける</span><small>自分の問題集も、1冊・100問までは無料</small></div>
+  </div>
+</section>
+
+<section class="who" aria-labelledby="h-who">
+  <div class="inner">
+    <h2 id="h-who" class="reveal">試験の前も、ふだんの勉強も。</h2>
+    <div class="whos">
+      <article class="reveal"><p class="tag">資格の受験生</p><h3>年度別の過去問を</h3><p>本番と同じ4択で解いて、間違えた問題だけを解き直せます。</p><p class="ex">ITパスポート・基本情報・FP3級・登録販売者 など</p></article>
+      <article class="reveal"><p class="tag">中学生・高校生・大学生</p><h3>テスト範囲を1冊に</h3><p>教科書やノートの写真から、AI が4択の問題と解説を作ります。</p><p class="ex">共通テスト対策の数学Ⅰ・A、英単語も入っています</p></article>
+      <article class="reveal"><p class="tag">社会人の独学</p><h3>通勤の数分で1問</h3><p>スマホでも PC でも、ブラウザで開けます。1問ずつ、すきま時間に進められます。</p><p class="ex">AZ・CCNP・LPIC・簿記2級などのオリジナル問題も（一部有料）</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="steps" id="steps" aria-labelledby="h-steps">
+  <div class="inner">
+    <div>
+      <h2 id="h-steps" class="reveal">使い方は、4歩。</h2>
+      <div class="track" id="track">
+        <svg class="pencil" id="pencil" aria-hidden="true" preserveAspectRatio="none"><path id="pencilPath"/></svg>
+        <article class="step" data-shot="0">
+          <div class="no">01</div><h3>解く</h3>
+          <ol><li><a href="https://dopagakiquiz.com">dopagakiquiz.com</a> を開く。登録は要りません。初めては「なにを勉強していますか？」が出るので、分野を選ぶか「本棚を見る」へ。</li><li>「資格を探す」か本棚から、試験の棚を開く。</li><li>年度の1冊を選んで「はじめる」。</li></ol>
+          <p class="hint">問題数・出題順・時間は設定で変えられます。まずは変えずに始めて大丈夫です。</p>
+          <img class="mobile-shot" src="app/sp-quiz.webp" width="780" height="1688" loading="lazy" alt="スマホの出題画面。4つの選択肢と「わからない」">
+        </article>
+        <article class="step" data-shot="1">
+          <div class="no">02</div><h3>答えを読む</h3>
+          <ol><li>選ぶとすぐ、正解・不正解と解説が出ます。</li><li>ほかの選択肢が、なぜ違うかも書いてあります。</li><li>「解説を聴く」で音声、「ドパガキくんに質問」で分からない所を聞けます。</li></ol>
+          <p class="hint">分からなくても、まず1つ選んでから解説を読むと、記憶に残りやすくなります。</p>
+          <img class="mobile-shot" src="app/sp-answer-read.webp" width="780" height="1558" loading="lazy" alt="スマホで正解した後の画面。正解の札、解説を聴く・ドパガキくんに質問のボタン、その下に解説">
+        </article>
+        <article class="step" data-shot="2">
+          <div class="no">03</div><h3>作る</h3>
+          <ol><li>「問題集を作る」を開く（スマホはホームの「写真から問題集を作る」からも入れます）。</li><li>「教材から作ってもらう」なら、写真・PDF・文章・Web ページの URL を渡すと、AI が4択と解説を作ります。</li><li>「取り込む・自分で書く」なら、貼り付け・CSV・1問ずつの入力で。名前を付けて保存します。</li></ol>
+          <p class="hint">AI で作るのはログイン（Google アカウント）が要り、1日に使える回数に上限があります。できた問題は保存する前に確かめてください。人に見せてはいけない資料は入れないでください。</p>
+          <img class="mobile-shot" src="app/sp-make-ai.webp" width="780" height="1688" loading="lazy" alt="スマホの教材を入れる画面。写真、PDF、文章、URL">
+        </article>
+        <article class="step" data-shot="3">
+          <div class="no">04</div><h3>見直す</h3>
+          <ol><li>棚の上の「読んで覚える」なら、答えと解説から先に読めます。</li><li>間違えた問題・まだの問題に絞って、もう一度解けます（冊のカードの「まだの○問を解き直す」や、本棚の上の「間違いの解き直し」から）。</li><li>日をあけて解き直すと、記憶に残りやすくなります。</li></ol>
+          <p class="hint">「読んで覚える」の結果は、ふだんの成績には数えません。理解を先にしたい時に使ってください。</p>
+          <img class="mobile-shot" src="app/sp-shelf.webp" width="780" height="1688" loading="lazy" alt="スマホの試験の棚。本番で解く・読んで覚えるのタブ">
+        </article>
+      </div>
+    </div>
+    <div class="stage" aria-hidden="true">
+      <span class="bignum" id="bignum">01</span>
+      <div class="phone" id="phone"><span class="notch"></span><div class="screen">
+        <img class="on" src="app/sp-quiz.webp" width="780" height="1688" alt="">
+        <img src="app/sp-answer-read.webp" width="780" height="1558" alt="">
+        <img src="app/sp-make-ai.webp" width="780" height="1688" alt="">
+        <img src="app/sp-shelf.webp" width="780" height="1688" alt="">
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<section class="price" id="price" aria-labelledby="h-price">
+  <div class="inner">
+    <h2 id="h-price" class="reveal">料金は、ほとんど0円。</h2>
+    <div class="plans">
+      <div class="plan reveal"><p class="name">無料</p><p class="yen">0円</p><p>同梱の過去問・英単語は全部。自分の問題集は1冊・合計100問まで。</p></div>
+      <div class="plan reveal"><p class="name">プラス</p><p class="yen">月1,000円<small>（税込）</small></p><p>自分の問題集の冊数・問題数の上限なし。有料の冊も追加料金なしで解ける。</p></div>
+      <div class="plan hl reveal"><p class="name">先着100人</p><p class="yen">プラス 0円</p><p>ブラウザのマイページの「ログインする」から Google アカウントでログインした人から順に、2026年12月31日までプラスが無料。カードの登録は要らず、すぎると無料に戻ります（自動で請求されません）。</p></div>
+    </div>
+    <p class="reveal" style="margin-top:18px;font-weight:700">先着の残りの人数は <a href="https://dopagakiquiz.com/about">アプリの紹介ページ</a> で確かめられます（2026年11月18日に残り93人）。すでに有料プランを使っている方、招待などでプラスと同じ利用権を持っている方は対象外です。値段はすべて税込です。</p>
+  </div>
+</section>
+
+<section class="apps" id="apps" aria-labelledby="h-apps">
+  <div class="inner">
+    <h2 id="h-apps" class="reveal">ブラウザでも、アプリでも。</h2>
+    <p class="lead">同じ問題集を、使う場所に合わせて開けます。解いた記録は、基本は端末ごとに保存されます。別の端末へ移すときは、本棚の「バックアップを保存」で書き出して読み込みます。</p>
+    <div class="appcards">
+      <article class="reveal"><p class="tag">PC・スマホ・タブレット</p><h3>ブラウザ</h3><p>開くだけで使えます。スマホはホーム画面に追加できます。</p><div class="act"><a class="txt" href="https://dopagakiquiz.com/">dopagakiquiz.com</a></div></article>
+      <article class="reveal"><p class="tag">iPhone</p><h3>iPhone アプリ</h3><p>App Store で「ドパガキ問題集」。</p><div class="act"><a class="badge-as" href="https://apps.apple.com/jp/app/id6819903680" target="_blank" rel="noopener"><img src="img/badge-download-ja-black.svg" width="131" height="48" alt="App Store からダウンロード"></a></div></article>
+      <article class="reveal"><p class="tag">Apple シリコンの Mac</p><h3>Mac 版</h3><p>メニューバーに常駐し、勉強のリマインドも出せます。macOS 11 以降。</p><div class="act"><a class="txt" href="https://dopagakiquiz.com/mac">Mac 版をダウンロード</a></div></article>
+    </div>
+    <p class="credit">Apple、Apple のロゴは、米国その他の国で登録された Apple Inc. の商標です。App Store は Apple Inc. のサービスマークです。</p>
+  </div>
+</section>
+
+<section class="more" id="more" aria-labelledby="h-more">
+  <div class="head"><h2 id="h-more" class="reveal">続けるための仕掛け。</h2><p>横にすべらせて見られます（6枚）　→</p></div>
+  <div class="strip" id="strip" tabindex="0" aria-label="ほかにできること">
+    <article class="pol slap" style="--r:-2deg"><div class="ph"><img src="app/th-plan.webp" width="720" height="450" loading="lazy" alt="勉強計画の野営地の絵"></div><h3>勉強計画</h3><p>試験日を入れると、道のりと今日の目安が出ます。</p></article>
+    <article class="pol slap" style="--r:1.5deg"><div class="ph"><img src="app/th-ranking2.webp" width="486" height="400" loading="lazy" alt="ランキングの昇格戦の星図"></div><h3>ランキング</h3><p>ログインすると、毎日の昇格戦でほかの人と競えます。</p></article>
+    <article class="pol slap" style="--r:-1deg"><div class="ph"><img src="app/th-level.webp" width="600" height="375" loading="lazy" alt="進化の一覧の影絵"></div><h3>経験値とレベル</h3><p>解くほど経験値がたまり、ドパガキくんが進化します。</p></article>
+    <article class="pol slap" style="--r:2deg"><div class="ph"><img src="app/sp-game-play.webp" width="780" height="1688" loading="lazy" alt="不規則動詞ババ抜きを遊んでいる画面" style="object-position:center 30%"></div><h3>勉強ゲーム</h3><p>ババ抜き・ビンゴ・神経衰弱で、遊びながら覚えます。</p></article>
+    <article class="pol slap" style="--r:-1.5deg"><div class="ph"><img src="app/sp-home.webp" width="780" height="1688" loading="lazy" alt="スマホのブラウザで開いたホームの画面"></div><h3>スマホでも同じ</h3><p>スマホのブラウザでもそのまま使えます。ホーム画面に追加でき、iPhone アプリと Mac 版もあります。</p></article>
+    <article class="pol slap" style="--r:1deg"><div class="ph plane" aria-hidden="true"><svg viewBox="0 0 64 64" width="84" height="84"><path d="M6 30 58 8 46 56 30 38Z" fill="none" stroke="#FBF6EA" stroke-width="4" stroke-linejoin="round"/><path d="M30 38 58 8" stroke="#FBF6EA" stroke-width="4"/></svg></div><h3>問題集を渡す</h3><p>作った1冊を「書き出す」でファイルにして、友だちに渡せます。受け取る人が無料で、すでに自分の問題集が1冊あるときは、先に消すかプラスにすると読み込めます。</p></article>
+  </div>
+</section>
+
+<section class="faq" id="faq" aria-labelledby="h-faq">
+  <div class="inner">
+    <h2 id="h-faq">よくある質問</h2>
+    <details><summary>無料では何が使えますか？</summary><p>アプリに入っている ITパスポート・基本情報技術者・情報セキュリティマネジメント・登録販売者・FP3級の過去問 2,183問と、英単語などは、登録も支払いもなしで解けます。ほかにも宅建士・簿記3級・英検2級・日本語教員試験・CCNA・AZ-900 など、「有料」の札が付いていない冊は無料で、有料の冊も最初の Part は無料で試せます。自分で作る問題集は、無料だと1冊・合計100問までです。</p></details>
+    <details><summary>ログインは何でしますか？</summary><p>Google アカウントでログインします。解くだけならログインは要りません。AI で問題を作る・ランキングに参加する・先着のプラス無料を受け取る時に使います。</p></details>
+    <details><summary>先着100人のプラス無料は、どう受け取りますか？</summary><p>ブラウザで Google アカウントでログインすると、先着順で自動的に付きます（iPhone アプリの中では受け付けていません）。2026年12月31日まで使えて、カードの登録は要りません。期限がすぎると無料プランに戻り、自動で請求されることはありません。すでに有料プランを使っている方は対象外です。</p></details>
+    <details><summary>スマホのホーム画面に入れられますか？</summary><p>入れられます。iPhone は Safari の共有メニューから「ホーム画面に追加」、Android の Chrome はメニューの「アプリをインストール」から。iPhone アプリ（App Store）と Mac 版もあります。</p></details>
+    <details><summary>記録はどこに保存されますか？</summary><p>問題と学習記録は、その端末のブラウザに保存されます。ブラウザのデータを消す前や端末を替える前は、本棚の「バックアップを保存」で書き出しておくと安心です。</p></details>
+    <details><summary>プラスは何台で使えますか？</summary><p>1つの契約で5台までです。使わない端末は「契約の確認・解約」で外せます（外した端末は24時間使えず、外せるのは7日間に3回までです）。</p></details>
+    <details><summary>AI の機能で、入力した内容はどこへ送られますか？</summary><p>AI のボタンを押したときだけ、その部分の文章や、選んだ写真・PDF・Web ページの中身を、アプリのサーバーから外部の AI のサービスへ送って処理します。AI の答えは間違えることがあるので、取り込む前に確かめてください。学校や会社の資料を入れる時は、そこの決まりに従ってください。</p></details>
+  </div>
+</section>
+
+<section class="end" aria-labelledby="h-end">
+  <div class="inner">
+    <div>
+      <h2 id="h-end" class="reveal">今日から、1問。</h2>
+      <div class="urlrow"><a href="https://dopagakiquiz.com">dopagakiquiz.com</a><button type="button" class="btn gold" id="copy">URL をコピー</button><span id="copied" role="status"></span></div>
+      <p>登録なしで、過去問をすぐ解けます。</p>
+    </div>
+    <div class="wave" id="wave"><img src="img/mascot-wave.webp" width="1024" height="1024" loading="lazy" alt="ドパガキくんが手を振りながら、開いた本を持っている"></div>
+  </div>
+</section>
+</main>
+<p class="foot">ドパガキ問題集のご紹介（2026年11月）　<a href="https://dopagakiquiz.com/tokushoho" style="color:inherit">運営者・問い合わせ先（特定商取引法に基づく表記）</a>　<a href="https://dopagakiquiz.com/terms" style="color:inherit">利用規約</a>　<a href="https://dopagakiquiz.com/privacy" style="color:inherit">プライバシーポリシー</a><br>TOEIC は ETS の登録商標です。このページと問題集は ETS の検討や承認を受けたものではありません。</p>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // 見出しを1文字ずつ落とす
+  document.querySelectorAll('[data-split]').forEach(function(el){
+    var t = el.textContent; el.setAttribute('aria-label', t); el.textContent = '';
+    Array.from(t).forEach(function(c, k){
+      var s = document.createElement('span'); s.className = 'ch'; s.style.setProperty('--k', k);
+      s.setAttribute('aria-hidden', 'true'); s.textContent = c; el.appendChild(s);
+      if (c === '、') el.appendChild(document.createElement('br'));
+    });
+  });
+
+  // 試験の名前の帯
+  var names = ['ITパスポート','基本情報技術者','情報セキュリティマネジメント','登録販売者','FP3級','AZ-900','AZ-104','AZ-305','CCNP','LPIC','簿記2級','TOEIC L&R 形式'];
+  document.querySelectorAll('.marq .row').forEach(function(row, r){
+    var list = r ? names.slice().reverse() : names;
+    row.innerHTML = (reduce ? list : list.concat(list, list)).map(function(n){ return '<span>' + n.replace('&','&amp;') + '</span>'; }).join('');
+  });
+
+  // 出てくる動き・数字・手を振る
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if (!e.isIntersecting) return;
+      e.target.classList.add('in'); io.unobserve(e.target);
+      var b = e.target.querySelector && e.target.querySelector('[data-count]');
+      if (b) countUp(b);
+    });
+  }, { rootMargin: '0px 0px -12% 0px' });
+  document.querySelectorAll('.reveal,.slap,.wave').forEach(function(el){ io.observe(el); });
+  function countUp(b){
+    var to = +b.dataset.count, suf = b.dataset.suffix || '';
+    if (reduce || to === 0) { b.textContent = to.toLocaleString('ja-JP') + suf; return; }
+    var t0 = performance.now(), dur = 1400;
+    b.textContent = '0';
+    (function step(t){
+      var p = Math.min(1, (t - t0) / dur), v = Math.round(to * (1 - Math.pow(1 - p, 3)));
+      b.textContent = v.toLocaleString('ja-JP') + suf;
+      if (p < 1) requestAnimationFrame(step);
+    })(t0);
+  }
+
+  // 島を手の動きで傾ける
+  var island = document.getElementById('island'), hero = document.querySelector('.hero');
+  if (!reduce && island && matchMedia('(pointer:fine)').matches) {
+    hero.addEventListener('pointermove', function(e){
+      var r = hero.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      island.style.transform = 'rotateY(' + (x * 14) + 'deg) rotateX(' + (-y * 10) + 'deg)';
+    });
+    hero.addEventListener('pointerleave', function(){ island.style.transform = ''; });
+  }
+
+  // その場で1問
+  var opts = document.getElementById('opts'), stamp = document.getElementById('stamp'), exp = document.getElementById('exp'), result = document.getElementById('result');
+  opts.addEventListener('click', function(e){
+    var b = e.target.closest('.opt'); if (!b || opts.classList.contains('done')) return;
+    var ok = b.dataset.i === '0';
+    opts.classList.add('done');
+    opts.querySelectorAll('.opt').forEach(function(o){ o.setAttribute('aria-disabled', 'true'); if (o.dataset.i === '0') o.classList.add('right'); });
+    if (!ok) b.classList.add('wrong');
+    stamp.textContent = ok ? '正解' : 'おしい'; stamp.classList.toggle('ok', ok); stamp.classList.add('on');
+    result.textContent = ok ? '正解です。' : '不正解です。正解は A です。';
+    exp.classList.add('open');
+  });
+
+  // 4歩: スマホの画面の切り替え
+  var steps = Array.from(document.querySelectorAll('.step')), shots = Array.from(document.querySelectorAll('.phone .screen img')), bignum = document.getElementById('bignum'), phone = document.getElementById('phone');
+  var sio = new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if (!e.isIntersecting) return;
+      var i = +e.target.dataset.shot;
+      steps.forEach(function(s){ s.classList.toggle('on', s === e.target); });
+      shots.forEach(function(s, k){ s.classList.toggle('on', k === i); });
+      bignum.textContent = '0' + (i + 1);
+      phone.style.transform = 'rotate(' + (i % 2 ? -3 : 3) + 'deg)';
+    });
+  }, { rootMargin: '-45% 0px -45% 0px' });
+  steps.forEach(function(s){ sio.observe(s); });
+  steps[0].classList.add('on');
+
+  // 鉛筆の線（スクロールに合わせて描く）
+  var track = document.getElementById('track'), svg = document.getElementById('pencil'), path = document.getElementById('pencilPath'), len = 0;
+  function drawPath(){
+    var h = track.offsetHeight, d = 'M22 0', y = 0, k = 0;
+    while (y < h) { var ny = Math.min(h, y + 160); d += ' Q' + (k % 2 ? 6 : 38) + ' ' + (y + 80) + ' 22 ' + ny; y = ny; k++; }
+    svg.setAttribute('viewBox', '0 0 44 ' + h); svg.style.height = h + 'px';
+    path.setAttribute('d', d); len = path.getTotalLength();
+    path.style.strokeDasharray = len; path.style.strokeDashoffset = reduce ? 0 : len;
+  }
+  drawPath(); window.addEventListener('resize', drawPath); window.addEventListener('load', drawPath);
+
+  // スクロール: 進み具合・帯の速さ・鉛筆の線・上の帯の色
+  var bar = document.querySelector('.progress'), top = document.getElementById('top'), rows = document.querySelectorAll('.marq .row'), lastY = scrollY, off = 0, vel = 0;
+  function frame(){
+    var y = scrollY, max = document.documentElement.scrollHeight - innerHeight;
+    bar.style.transform = 'scaleX(' + (max > 0 ? y / max : 0) + ')';
+    top.classList.toggle('solid', y > hero.offsetHeight - 80);
+    if (!reduce) {
+      vel = vel * 0.9 + (y - lastY) * 0.1; lastY = y;
+      off += 0.6 + Math.abs(vel) * 0.35;
+      var w = rows[0].scrollWidth / 3 || 1;
+      rows[0].style.transform = 'translateX(' + (-(off % w)) + 'px)';
+      rows[1].style.transform = 'translateX(' + ((off % w) - w) + 'px)';
+      var r = track.getBoundingClientRect(), p = Math.min(1, Math.max(0, (innerHeight * 0.55 - r.top) / r.height));
+      path.style.strokeDashoffset = len * (1 - p);
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  // ほかにできること: つかんで横に送る
+  var strip = document.getElementById('strip'), sx = 0, sl = 0, dragging = false;
+  strip.addEventListener('pointerdown', function(e){ if (e.pointerType !== 'mouse') return; e.preventDefault(); dragging = true; sx = e.clientX; sl = strip.scrollLeft; strip.style.scrollSnapType = 'none'; strip.classList.add('dragging'); });
+  strip.addEventListener('wheel', function(e){ if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) { var max = strip.scrollWidth - strip.clientWidth; if ((e.deltaY > 0 && strip.scrollLeft < max - 2) || (e.deltaY < 0 && strip.scrollLeft > 2)) { strip.scrollLeft += e.deltaY; e.preventDefault(); } } }, { passive: false });
+  window.addEventListener('pointermove', function(e){ if (dragging) strip.scrollLeft = sl - (e.clientX - sx); });
+  window.addEventListener('pointerup', function(){ if (dragging) { dragging = false; strip.style.scrollSnapType = ''; strip.classList.remove('dragging'); } });
+
+  // URL をコピー
+  document.getElementById('copy').addEventListener('click', function(){
+    var msg = document.getElementById('copied');
+    if (!navigator.clipboard) { msg.textContent = 'URL を長押しか右クリックでコピーしてください'; return; }
+    navigator.clipboard.writeText('https://dopagakiquiz.com').then(function(){ msg.textContent = 'コピーしました'; }, function(){ msg.textContent = 'URL を長押しか右クリックでコピーしてください'; });
+  });
+})();
+</script>
+</body>
+</html>
